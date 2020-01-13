@@ -82,12 +82,18 @@ class Ad
      */
     private $bookings;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="ad", orphanRemoval=true)
+     */
+    private $comments;
+
 
 
     public function __construct()
     {
         $this->images = new ArrayCollection();
         $this->bookings = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     /**
@@ -126,6 +132,25 @@ class Ad
         }
 
         return $notAvailableDays;
+    }
+
+    /**
+     * Permet de récupérer la note globale de l'annonce
+     *
+     * @return float
+     */
+    public function getAvgRatings(){
+        // calculer la somme des notations
+        // La fonction array-reduce permet de reduire le tableau à une seule valeur (attention il faut un tableau et pas une arrat_collection d'ou le toArray() - 2ème paramètre pour la fonction pour chaque valeur - "ème paramètre valeur par défaut)
+        $sum = array_reduce($this->comments->toArray(), function($total, $comment){
+            return $total + $comment->getRating();
+        },0);
+
+        // faire la division pour avoir la moyenne
+
+        if(count($this->comments) > 0) return $moyenne = round($sum / count($this->comments));
+        return 0;
+
     }
 
     public function getId(): ?int
@@ -285,6 +310,37 @@ class Ad
             // set the owning side to null (unless already changed)
             if ($booking->getAd() === $this) {
                 $booking->setAd(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setAd($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getAd() === $this) {
+                $comment->setAd(null);
             }
         }
 

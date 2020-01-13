@@ -3,6 +3,7 @@
 namespace App\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class FrenchToDateTimeTransformer implements DataTransformerInterface{
@@ -21,7 +22,7 @@ class FrenchToDateTimeTransformer implements DataTransformerInterface{
             throw new TransformationFailedException("Vous devez fournir une date!");
         }
 
-        $date = \DateTime::createFormFormat('d/m/Y',$frenchDate);
+        $date = \DateTime::createFromFormat('d/m/Y',$frenchDate);
 
         if($date === false){
             //Exception

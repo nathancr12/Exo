@@ -245,7 +245,16 @@ class AccountController extends AbstractController
         return $this->render('account/password.html.twig',[
             'myForm' => $form->createView()
         ]);
+    }
 
-
+    /**
+     * Permet d'afficher la liste des reservations daites par l'utilisateur
+     *
+     * @Route("account/bookings", name="account_booking")
+     * @IsGranted("ROLE_USER")
+     * @return Response
+     */
+    public function bookings(){
+        return $this->render('account/bookings.html.twig');
     }
 }

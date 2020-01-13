@@ -99,7 +99,7 @@ class Booking
         },$notAvailableDays);
 
         foreach($days as $day){
-            if(arrap_search($days, $notAvailableDays) !== false ) return false;
+            if(array_search($days, $notAvailableDays) !== false ) return false;
         }
 
         return true;
